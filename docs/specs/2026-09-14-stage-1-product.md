@@ -106,13 +106,13 @@ Follow [milestones M0-M9](../plans/active/2026-09-14-stage-1-demo.md). Only fict
 
 | Stage | Purpose | Candidate work and gates |
 |---|---|---|
-| Stage 2: firm pilot | Validate real advisor workflow with a firm-approved data policy | Reviewed/current form library; firm-owned required/conditional rules; supporting attachments (ID, OFAC report, illustrations, carrier files); recovery/retention; encrypted database if scale demands it; deployment/signing and security review before real PII |
+| Stage 2: firm pilot | Validate real advisor workflow with a firm-approved data policy | Reviewed/current form library classified and registered per the [template classification and registry reference](../references/template-classification-and-registry.md); firm-owned required/conditional rules; attachments (ID, OFAC report, illustrations, carrier files) as a distinct package item type with presence checks; recovery/retention; encrypted database if scale demands it; deployment/signing and security review before real PII |
 | Stage 2 research | Discover external workflow contracts | Identify carrier APIs/vendors, approved authentication, supported automation and session limits; research Adobe/e-signature consent, identity, audit and evidence requirements separately |
 | Stage 3: commercialization | Multi-firm product and support | Firm branding/mappings, version distribution/migrations, roles, seats/devices, licensing, enterprise MSI, code signing/reputation, secure updates, PII-free diagnostics, reviewed audit/retention and recovery controls |
 
 Future `ExternalApplicationAdapter` is an interface candidate, not an empty Stage 1 framework: approved target, explicit field translation, authenticated session ownership, timeouts, and user-controlled completion. Prefer vendor APIs/approved paths; do not circumvent controls or retain credentials unnecessarily. Reusing PII on an external site changes the local-only boundary and requires an explicit later policy decision.
 
-Future package rules can recommend forms from product/account/rollover choices only once specifications exist. Attachments and fillable forms should then be distinct package item types.
+Future package rules can recommend forms from product/account/rollover choices only once specifications exist. Attachments and fillable forms must then be distinct package item types: a missing identification copy or supporting statement is a leading cause of Not In Good Order returns that fillable-form validation cannot detect, so Stage 2 verification needs an explicit presence check per required attachment. The Stage 1 engine also assumes AcroForm templates; flat and XFA forms in a real library need the separate handling described in the template reference before they can be promised.
 
 Future licensing exchanges only entitlement/license ID, app version, and a minimized device identifier. No client identifiers, client names, DOB/SSN, case answers, documents, or PDF hashes/content are sent. Keep licensing networking separate from repositories/PDF services. No licensing endpoint or code in Stage 1.
 
