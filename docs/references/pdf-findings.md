@@ -3,7 +3,7 @@ node_id: ref-pdf-findings
 type: reference
 title: Technical findings from the two supplied TWS PDFs
 created: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 status: active
 category: reference
 tags: [pdf, evidence]
@@ -123,6 +123,6 @@ Checkbox groups are implemented as **independent AcroForm checkbox fields**, not
 
 ## Feasibility conclusion
 
-**pdf-lib is a realistic candidate**, supported by successful read-only enumeration of every expected field and absence of XFA/encryption. It is not a viewer or an interactive PDF editor. [Its form API](https://pdf-lib.js.org/docs/api/classes/pdfform) supplies field access and appearance/flattening operations; [PDF.js](https://mozilla.github.io/pdf.js/api/) supplies display capabilities. Their joint live-sync and export behavior must be proven on copies before claiming compatibility. Full flattening is not the default because downstream client signature fields must survive.
+**pdf-lib is a realistic M0 baseline**, supported by successful read-only enumeration of every expected field and absence of XFA/encryption. It is not a viewer or an interactive PDF editor. Two caveats now govern its use: the library has had no release since 1.17.1 (2021), and its save routine writes every loaded object without garbage collection, so a page-subset client copy must be built into a fresh document rather than by removing pages. The [stack ADR](../decisions/2026-09-14-desktop-pdf-stack.md) lists the replacement candidates M0 evaluates against the same fixtures. [Its form API](https://pdf-lib.js.org/docs/api/classes/pdfform) supplies field access and appearance/flattening operations; [PDF.js](https://mozilla.github.io/pdf.js/api/) supplies display capabilities. Their joint live-sync and export behavior must be proven on copies before claiming compatibility. Full flattening is not the default because downstream client signature fields must survive.
 
 Complete discovered names/types/values/locations: [AcroForm appendix](pdf-field-inventory.md).

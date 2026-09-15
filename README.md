@@ -38,6 +38,15 @@ Start with the [product specification](docs/specs/2026-09-14-stage-1-product.md)
 - [Security gap review](docs/SECURITY.md#practical-windows-gap-review-2026-09-15): clipboard, presentation, Windows lifecycle and retention additions.
 - [Acceptance](docs/specs/2026-09-14-validation-acceptance.md#meeting-design-and-practical-privacy-proofs): additional A13–A18 gates integrated into M1–M9.
 
+## Design review updates (2026-09-15)
+
+- [Canonical data dictionary](docs/specs/2026-09-15-canonical-data-dictionary.md): the single allowlist of semantic paths for mappings, controls, rules and provenance.
+- [Template classification and registry](docs/references/template-classification-and-registry.md): AcroForm, flat, XFA and eSignature-native classes, registry fields and attachments as a Stage 2 package item type.
+- [Stack ADR](docs/decisions/2026-09-14-desktop-pdf-stack.md): overlay-first display adapter; output library chosen by M0 evidence, with pdf-lib's maintenance and garbage-collection limits recorded.
+- [Handoff ADR](docs/decisions/2026-09-14-local-storage-and-handoff.md): New Outlook risk and the Graph draft alternative recorded, not built.
+- [Data model](docs/specs/2026-09-14-data-mapping-sync.md#value-provenance): value provenance and confirmation per stored value.
+- [Risk register](docs/references/risks-and-assumptions.md): output library, Outlook variant, flat/XFA templates and unassigned domain reviewer.
+
 ## Harness and future sessions
 
 - [AGENTS.md](AGENTS.md): session entry and project boundaries.

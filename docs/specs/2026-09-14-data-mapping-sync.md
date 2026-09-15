@@ -16,7 +16,7 @@ summary: Precise source ownership, proposed mapping schema, real-field examples 
 
 ## Load-bearing decisions
 
-[Canonical state ADR](../decisions/2026-09-14-state-and-approval.md) and [desktop/PDF ADR](../decisions/2026-09-14-desktop-pdf-stack.md).
+[Canonical state ADR](../decisions/2026-09-14-state-and-approval.md) and [desktop/PDF ADR](../decisions/2026-09-14-desktop-pdf-stack.md). Semantic paths used by `source.path` are defined in the [canonical data dictionary](2026-09-15-canonical-data-dictionary.md).
 
 ## Problem, goals and non-goals
 
@@ -31,6 +31,12 @@ type Answer = string | number | boolean | null | string[] | Record<string, unkno
 type DateOnly = string;
 type Revision = number;
 
+type ValueOrigin = 'typed' | 'fixture' | 'override' | 'reset' | 'adopted';
+interface ValueProvenance {
+  origin: ValueOrigin; actorId: string; at: string; commandId: string;
+  confirmed: boolean; // advisor has seen and accepted this value in this case
+}
+
 interface ClientProfile {
   id: string; revision: Revision;
   firstName: string; middleName?: string; lastName: string;
@@ -41,6 +47,7 @@ interface ClientProfile {
   identification?: { type: string; issuer: string; number: string;
                       issuedOn?: DateOnly; expiresOn?: DateOnly };
   employer?: { name: string; occupation?: string; businessAddress?: object };
+  provenance: Record<string, ValueProvenance>; // keyed by dictionary path
 }
 interface AdvisorProfile {
   id: string; displayName: string; email?: string; firmName: string;
@@ -64,6 +71,7 @@ interface CaseRecord {
     feeComparison?: { basis?: 'actual' | 'benchmark'; cells: Record<string, FeeCell> };
     financialSnapshot?: object; beneficiaries?: object[];
   };
+  factProvenance: Record<string, ValueProvenance>; // keyed by dictionary path under case.*
   documents: DocumentInstance[];
   verification?: VerificationRecord; approval?: ApprovalRecord;
   finalizedPackageIds: string[]; workflowState: string;
@@ -73,16 +81,18 @@ interface DocumentInstance {
   id: string; templateId: string; templateVersion: string; templateSha256: string;
   mappingVersion: string; selected: boolean;
   answers: Record<string, Answer>; // document-only semantic answers
+  answerProvenance: Record<string, ValueProvenance>; // keyed by binding ID
   overrides: Record<string, DocumentOverride>; // key is binding/group ID, never global field name
 }
 interface DocumentOverride {
-  value: Answer; actorId: string; updatedAt: string; sourceRevisionAtEdit: Revision;
+  value: Answer; provenance: ValueProvenance; sourceRevisionAtEdit: Revision;
   kind: 'scalar' | 'choiceGroup'; // presence distinguishes override from absence
 }
 interface AuditEvent {
   id: string; sequence: number; timestamp: string; actorId?: string;
   eventType: string; caseId?: string; documentId?: string; bindingId?: string;
-  contentRevision?: Revision; outcome: 'success' | 'failure'; errorCode?: string;
+  contentRevision?: Revision; origin?: ValueOrigin;
+  outcome: 'success' | 'failure'; errorCode?: string;
   // No old/new values, free-text payloads, client names, recipient, PDF bytes or filenames with PII.
 }
 interface VerificationRecord {
@@ -110,6 +120,10 @@ interface EmailDraftRequest {
   artifactIds: string[]; to: string; subject: string; body: string;
 }
 ```
+
+### Value provenance
+
+Every stored profile value, case fact, document-only answer and override carries one `ValueProvenance` record: how the value arrived, who committed it, when, and under which command. Origins are `typed` (entered in the left panel or a PDF widget), `fixture` (Load Demo Client), `override` (direct document edit), `reset` (override cleared to the synced source) and `adopted` (copied from a reusable profile at case creation or through the explicit newer-profile apply action). `confirmed` is true for `typed`, `override` and `reset` at commit time and false for `fixture` and `adopted` until the advisor edits or explicitly confirms the value in this case. No Stage 1 validation rule depends on `confirmed`; it exists so a later rule can, and so the finalized snapshot records which values the advisor actually handled. Provenance is metadata, not a value: it is never displayed in Presentation Mode, never logged outside the vault, and never emitted to a PDF. The audit event for a commit records `origin` alongside the existing binding and revision identifiers.
 
 `ValidationIssue` and `WarningAcknowledgement` are defined by the [validation contract](2026-09-14-validation-acceptance.md). Numeric answers must be finite and within configured bounds; integer fields such as retirement months use numbers consistently in sources and overrides. Money remains decimal strings or integer minor units with explicit currency. `TemplateDefinition` owns display title, real/sample flag, bundled resource ID, hash, page metadata, mapping version and export policy. No absolute file paths are accepted from the renderer.
 
@@ -143,7 +157,7 @@ Persist one authenticated workspace snapshot (profiles, cases, advisor, encrypte
 | `initialization` | Explicit new-case clearing policy; preserve original bytes; never reuse original factual `/V` values automatically |
 | `bindings[].id`, `label`, `kind`, `section` | Stable semantic binding and UI location; IDs unique within template |
 | `source.scope` | `client`, `case`, `advisor`, `document`, or `downstream`; cannot overlap ambiguously |
-| `source.path` | Allowlisted typed semantic path; resolved client scope is active-case snapshot |
+| `source.path` | Semantic path that must resolve to an entry in the [canonical data dictionary](2026-09-15-canonical-data-dictionary.md); resolved client scope is active-case snapshot; unknown paths fail template validation |
 | `source.derived` | Named registered transform such as `fullName`; never evaluated JavaScript |
 | `targets[]` | Exact field name, expected PDF type, physical page and optional rectangle tolerance; a logical binding may have multiple outputs |
 | `kind` | `text`, `integer`, `date`, `currency`, `percent`, `boolean`, `enum`, `enumSet`, `signature`, or explicitly typed fee cell |
@@ -281,7 +295,7 @@ Thus the value precedence is `present override > present mapped answer > reviewe
 
 ### Mutation contract
 
-- A left-panel master/case edit issues a typed command with expected content revision and unique command ID. The main reducer validates ownership/type, commits state and audit atomically, and returns the accepted revision plus effective-field patches.
+- A left-panel master/case edit issues a typed command with expected content revision and unique command ID. The main reducer validates ownership/type, commits state, provenance and audit atomically, and returns the accepted revision plus effective-field patches. The reducer assigns provenance from the command type; the renderer cannot supply or alter it.
 - Direct PDF input dispatches `setDocumentOverride(documentId, bindingId, value)`. It never dispatches a profile patch. Unmapped-but-declared document-only fields update `answers` instead of a meaningless override.
 - Every exclusive group is stored as one nullable enum override. Clicking Yes sets Yes and clears No in the same reducer transition. Later shared-source edits cannot partially overwrite another member. Reset group clears the group override as a whole.
 - Programmatic widget updates are tagged with origin/revision and suppressed from user-edit capture. Prevent echo loops and stale patches. Widgets on multiple pages must all reflect their semantic binding if a future template repeats a field.
@@ -301,7 +315,7 @@ Thus the value precedence is `present override > present mapped answer > reviewe
 | Change shared Yes/No answer after overriding B | Case updates | New case choice | Complete B choice override remains |
 | Reset B choice group | Unchanged | Same | Entire latest case choice restored |
 | Deselect/reselect B | Case package revision changes | Unchanged | Same instance/overrides retained; excluded while deselected |
-| Restart | Authenticated vault restored | Same effective value | Same override, source and revision |
+| Restart | Authenticated vault restored | Same effective value | Same override, source, provenance and revision |
 
 The requested address example is identical: master 100 Main Street; sample PDF B override 102 Main Street; sample PDF A stays 100 Main Street. Neither real TWS template has an address field. Clearing an override restores the currently adopted active-case source; it does not automatically refresh from a newer profile belonging to another case.
 

@@ -123,8 +123,8 @@ Design matrix and component contracts: [visual design system](2026-09-15-visual-
 
 ### Additional mandatory checks
 
-- Unit: derived-name formatting; absence versus empty/null/false/zero; applicability; transactional group changes; input-loop suppression; source snapshot refresh; single-writer/stale command behavior; verification/approval invalidation; warning identity and acknowledgements.
-- Mapping: each of 189 original fields has exactly one intended disposition; every declared name/type/page/export state exists; all new sample fields are covered; no cycles/unknown paths; original preselected boxes cleared on new case; all signature roles explicit.
+- Unit: derived-name formatting; absence versus empty/null/false/zero; applicability; transactional group changes; input-loop suppression; source snapshot refresh; single-writer/stale command behavior; verification/approval invalidation; warning identity and acknowledgements; provenance assigned by the reducer from command type, rejected when supplied by the renderer, preserved through override/reset/adopt/restart and frozen in the finalized snapshot.
+- Mapping: each of 189 original fields has exactly one intended disposition; every declared name/type/page/export state exists; every `source.path` resolves to a canonical data dictionary entry with a compatible kind and sensitivity; all new sample fields are covered; no cycles/unknown paths; original preselected boxes cleared on new case; all signature roles explicit.
 - Date/fee fixtures: leap years, empty values, multiline/long names, apostrophes and supported non-ASCII names, display overflow, dollar/percentage distinctions, N/A and inactive overrides.
 - Encryption: random nonces, authentication tamper rejection, wrong key/AAD, roundtrip and truncated envelopes, failed atomic replacement/disk full, last-good snapshot recovery, no plaintext error paths.
 - IPC: reject renderer paths, `..`, UNC locations, untrusted senders, huge inputs, arbitrary command requests, signature writes and unsigned/outdated artifact IDs.
