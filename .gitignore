@@ -1,0 +1,15 @@
+# Supplied templates and generated PDFs remain local per project instructions.
+*.pdf
+
+# Future local runtime, build output and private data.
+node_modules/
+dist/
+out/
+release/
+tmp/
+staging/
+vault/
+artifacts/
+.env
+.env.*
+*.log
