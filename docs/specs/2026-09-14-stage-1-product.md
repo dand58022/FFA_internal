@@ -3,7 +3,7 @@ node_id: design-stage-1-product
 type: design
 title: Stage 1 advisor document preparation prototype
 created: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 status: draft
 category: cross-domain
 tags: [product, frontend, backend]
@@ -46,9 +46,10 @@ The VP should see a coherent meeting experience: enter once, preserve exceptions
 |---|---|
 | Platform | Windows desktop, one local advisor login, one active app instance/case editor |
 | Document selection | Six cards; any nonempty combination, deterministic ordering, selected count |
-| Real forms | All pages visible; inventory-backed mappings for all non-signature widgets, with case/document-only ownership where appropriate |
+| Real forms | All pages available in private review; Presentation Mode withholds internal pages. Inventory-backed mappings for all non-signature widgets, with case/document-only ownership where appropriate |
 | Sample forms | Four simple, polished, fillable PDFs using the same mapping/view/export engine; clear Sample branding |
 | Workspace | Resizable data/PDF split, keyboard navigation, section completion, document tabs, scroll and zoom |
+| Visual experience | Client-facing navy/light shell, semantic design system, locally owned components and Presentation Mode; see the [visual spec](2026-09-15-visual-design-system.md) |
 | Reuse | Client profile plus active-case snapshot; shared name, sponsor, plan; sample documents also show address and other demographics |
 | Direct PDF editing | Text and checkboxes; configured choice groups; document overrides and reset action |
 | Persistence | Encrypted local JSON vault, reopen saved demo clients/cases, minimal local login |
@@ -81,7 +82,7 @@ Four sample PDFs are generated only during implementation. They use unique templ
 ### Evidence-driven changes to the initial idea
 
 1. The real forms lack address/SSN fields. Use names and plan facts for the two-real-form demonstration, and sample forms for address reuse.
-2. Avoid separate "Verify & Approve" and "Advisor Sign-off" confirmations. Use Verify Forms, then one intentional Approve Package action after review.
+2. Avoid separate "Verify & Approve" and "Advisor Sign-off" confirmations. Use Verify Documents, then one intentional Approve Package action after review.
 3. Start the viewer on the first data page (page 2 of each real form), while preserving page 1 consent and its navigation entry.
 4. Do not let blank-looking original fields imply default answers. Initialize working copies from reviewed configuration.
 5. Intake page 7 is internal. Proposed client export contains pages 1-6; internal archive retains 1-7. Preserve page order and log the export policy version.

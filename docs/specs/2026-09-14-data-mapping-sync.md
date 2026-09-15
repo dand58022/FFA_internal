@@ -3,7 +3,7 @@ node_id: design-data-mapping-sync
 type: design
 title: Canonical data, PDF mappings and document overrides
 created: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 status: draft
 category: cross-domain
 tags: [frontend, backend, pdf]
@@ -156,6 +156,10 @@ Persist one authenticated workspace snapshot (profiles, cases, advisor, encrypte
 | `overridePolicy` | Allowed for preparation bindings; direct PDF edits affect only this document |
 | `signatureRole`, `completionStage` | Explicit client/advisor/consent semantics; Stage 1 downstream roles cannot be signed in app |
 | `export` | Internal/client page selections, field treatment and policy version |
+| `bindings[].sensitivity` | `identifier`, `personal`, or `ordinary`; drives SecureField masking/copy policy, not encryption scope (all case values remain encrypted) |
+| `bindings[].audience`, `pages[].audience` | `clientVisible` or `internalOnly`; page list covers every physical page, including non-widget text. Intake page 7 is internal-only |
+
+Presentation metadata is reviewed with the mapping version. Unknown sensitivity defaults to restricted copying; unknown page/binding audience is withheld during Presentation Mode until classified. Shared left-side source controls adopt the most restrictive sensitivity/audience among their selected bindings. A rule's issue details inherit the most restrictive audience of its targets/dependencies; document/package failures use a value-free public summary and retain internal detail privately. View filtering never changes applicability, stored values, verification counts/guards or export policy. The [UX spec](2026-09-14-stage-1-ux.md#presentation-mode) defines navigation and [security](../SECURITY.md) defines the limitation. These additions belong to the complete M3 schema; JSON examples below remain illustrative subsets.
 
 All template widgets must match exactly one binding target or a declared downstream/ignored disposition. Unknown fields, unexpected duplicate names, wrong types and invalid export states fail template validation. Dynamic form UI is generated from selected binding/source definitions, deduplicated by source path; never from field names alone.
 

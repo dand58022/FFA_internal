@@ -3,7 +3,7 @@ node_id: arch-faa-desktop
 type: domain
 title: Stage 1 desktop application architecture
 created: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 last-useful: 2026-12-14
 status: draft
 category: architecture
@@ -40,7 +40,9 @@ This assessment is an architectural recommendation, not a measured benchmark. [T
 | Zustand | Renderer projection and view preferences; no persistence middleware for PII |
 | Zod | IPC, mapping and storage envelope schemas; semantic validation remains domain rules |
 | React Hook Form | Grouped dynamic entry, draft input/error display; source of truth stays domain state |
-| Radix primitives / owned styled components | Keyboard/accessibility foundation; no remotely loaded UI assets |
+| Tailwind CSS 4 + locally owned shadcn/ui (Radix) | Semantic local tokens and accessible owned primitives; customized navy/light design |
+| lucide-react + local Segoe UI | Bundled named SVG icons and Windows font stack; no remote assets |
+| CSS transitions | Brief meaningful transitions with reduced-motion support; no Motion dependency in Stage 1 |
 | Node `crypto`, `fs`, `child_process` | Main-only encryption, atomic persistence, fixed helper launch |
 | Fixed Windows PowerShell 5.1 helper | Classic Outlook COM draft; structured input, hidden process window |
 | Vitest + Testing Library | Domain/mapping/component tests |
@@ -48,6 +50,8 @@ This assessment is an architectural recommendation, not a measured benchmark. [T
 | electron-builder | Windows unpacked artifact and per-user installer/EXE; no auto-updater in Stage 1 |
 
 Pin versions together after M0 verifies compatibility and current security support. pdf-lib 1.17.1 is the version used for read-only inspection, not a blanket approval of future deployment. Record dependency/font licenses and build hashes; no network-loaded fonts, CDN assets or PDF workers. XState is unnecessary initially; a typed reducer can express the bounded state machine.
+
+Frontend alternatives and rationale: [frontend design ADR](decisions/2026-09-15-frontend-design-system.md). Exact tokens, components and display geometry: [visual design system](specs/2026-09-15-visual-design-system.md).
 
 ## L. Application architecture
 
@@ -91,6 +95,10 @@ The privileged layer owns file paths, keys, audit, authorization, output and Out
 - **Repository/EncryptionService:** authenticate/encrypt envelopes, handle atomic persistence and recovery, never let renderer choose files.
 - **AuditService:** allowlisted metadata events with sequence/revision; encrypted with state; no raw values or exception payloads.
 - **OutlookService:** validate finalized client artifact IDs, stage attachments and launch fixed helper; return structured known success/failure/uncertain status.
+
+### Presentation and host policy
+
+Presentation Mode is renderer view state, not authorization or redaction. Versioned mapping metadata classifies sensitive bindings/internal-only pages; rule issues inherit audience classification so filtered views cannot leak internal snippets. Main continues full validation regardless of view filtering. SecureField and the PDF adapter apply the same declared interaction restrictions; no generic clipboard, print, drag or deep-link bridge is exposed. Main owns OS lock/suspend/background session revocation and rejects stale operations. Concrete controls/limitations are in [security](SECURITY.md#practical-windows-gap-review-2026-09-15).
 
 ### Typed preload examples (conceptual)
 
@@ -141,7 +149,8 @@ src/
   renderer/
     App.tsx
     screens/                 Login, Selection, Workspace
-    components/              SectionForm, DocumentTabs, VerificationPanel, ApprovalPanel
+    components/              owned primitives and visual-spec compositions
+    styles/                  semantic token source and compiled Tailwind theme
     pdf/                     PdfViewer, widget-adapter, issue-navigation
     state/                   projection and view preferences
   domain/

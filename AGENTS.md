@@ -20,7 +20,7 @@ For the initial documents, validate frontmatter with the inspected Harness check
 ## Project structure
 
 - Root PDFs: immutable supplied originals; use copies for future development.
-- `docs/specs/`: dated product, UX, data/mapping, and validation contracts.
+- `docs/specs/`: dated product, UX, visual design system, data/mapping, and validation contracts.
 - `docs/plans/active/`: proposed/ongoing work with Done / Next / Open decisions.
 - `docs/plans/completed/`: plans move here only after acceptance evidence exists.
 - `docs/decisions/`: architecture decision records (ADRs); supersede accepted records when decisions change.
@@ -37,6 +37,7 @@ For the initial documents, validate frontmatter with the inspected Harness check
 - Encrypt client/case/audit data locally; never persist values in logs, browser storage, or plaintext JSON.
 - Keep originals untouched. Template hashes and mapping versions are part of document identity.
 - Green verification means configured preparation checks passed; it is not a compliance or suitability judgment.
+- Follow the visual design spec and frontend ADR for tokens/owned local components; Presentation Mode is privacy assistance, never PDF redaction or capture protection.
 
 ## Development workflow after approval
 

@@ -1,9 +1,9 @@
 ---
 node_id: ref-planning-verification
 type: reference
-title: Initial planning package verification
+title: Planning package verification
 created: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 status: active
 category: reference
 tags: [verification, planning]
@@ -26,7 +26,7 @@ This task produced Markdown specifications and plans only. Application implement
 
 ## Documentation checks
 
-Final local validation result: **PASS**. Seventeen `docs/` Markdown documents passed frontmatter; 80 relative links/anchors resolved; 189 inventory rows matched the expected total; both JSON examples matched real field evidence; both original hashes were unchanged; AGENTS contains 51 lines. There are 21 authored Markdown files including root governance/index files, and no application source files.
+Initial planning validation result (2026-09-14): **PASS**. Seventeen `docs/` Markdown documents passed frontmatter; 80 relative links/anchors resolved; 189 inventory rows matched the expected total; both JSON examples matched real field evidence; both original hashes were unchanged; AGENTS contained 51 lines. There were 21 authored Markdown files including root governance/index files, and no application source files.
 
 - Upstream Harness `checks.check_frontmatter.run` checks every authored Markdown document under `docs/`; root governance files use the upstream root-file convention.
 - Relative Markdown links and section anchors are checked; future source paths are intentionally code-formatted proposed paths, not fake existing links.
@@ -51,3 +51,15 @@ A bounded read-only reviewer checked the specification and then the plan/accepta
 The reviewer rechecked all five corrections and returned **no findings**.
 
 These checks establish documentation consistency and read-only evidence. They do not replace owner approval, firm review, the PDF feasibility gate or the packaged Windows acceptance run.
+
+## Frontend / presentation / security planning pass (2026-09-15)
+
+Added one visual design spec, one frontend ADR and two static design boards; extended the existing topic owners. No source scaffold or dependencies were added. Runtime/application tests remain unexecuted. The boards use locally rendered schematic content, no source PDF bytes or real client data, and are not evidence of functioning screens.
+
+- Primary documentation reviewed for shadcn ownership/Vite integration, Tailwind/Vite, Radix accessibility, Lucide React, Motion reduced-motion support, Electron clipboard/powerMonitor/Recent Documents, and WCAG contrast. Direct sources are linked beside decisions in the frontend ADR, visual spec and security document.
+- Bounded independent read-only reviewer returned **Approved**, with no actionable contradictions in privacy restrictions, internal-page filtering, main-owned session lifecycle, DIP layout fallbacks or milestone coverage of A13–A18.
+- Static board images rendered at 1920×1080 and inspected locally for clipping/readability. They are approximate illustrations; dimensional/behavior contracts in the visual spec govern implementation. A symbol-font fallback corrected missing checkmark glyphs in the initial render.
+- Computed sRGB contrast: primary/white 6.48:1; muted/canvas 5.67:1; white/navy 14.64:1; success/success surface 5.59:1; warning/warning surface 5.61:1; blocker/blocker surface 6.05:1; control border/white 4.02:1. These arithmetic checks do not prove runtime WCAG conformance or PDF accessibility.
+- Final structural validation **PASS**: 19 Harness docs, 112 local links/anchors, unique IDs, two mapping examples, 189 inventory rows and unchanged original hashes; AGENTS has 52 lines. `git diff --check` passed after removing a trailing blank line. The checker explicitly permits only the two named PNG design assets in addition to the earlier document/original-file types.
+
+Display-scaling, clipboard, lock/suspend, uninstall, live PDF behavior and A13–A18 are future implementation acceptance gates; no results are fabricated for them.

@@ -31,6 +31,13 @@ Start with the [product specification](docs/specs/2026-09-14-stage-1-product.md)
 | S. Ranked risks and assumptions | [Decisions and risks](docs/references/risks-and-assumptions.md) |
 | T. Final recommendation | [Product spec](docs/specs/2026-09-14-stage-1-product.md#t-final-recommendation) |
 
+## Frontend, visual design and privacy planning pass
+
+- [Visual design system](docs/specs/2026-09-15-visual-design-system.md): semantic tokens, concrete screen layouts, reusable components and Windows display matrix.
+- [Frontend design ADR](docs/decisions/2026-09-15-frontend-design-system.md): Tailwind, locally owned shadcn/Radix, Lucide, local fonts and CSS motion.
+- [Security gap review](docs/SECURITY.md#practical-windows-gap-review-2026-09-15): clipboard, presentation, Windows lifecycle and retention additions.
+- [Acceptance](docs/specs/2026-09-14-validation-acceptance.md#meeting-design-and-practical-privacy-proofs): additional A13–A18 gates integrated into M1–M9.
+
 ## Harness and future sessions
 
 - [AGENTS.md](AGENTS.md): session entry and project boundaries.
@@ -39,6 +46,6 @@ Start with the [product specification](docs/specs/2026-09-14-stage-1-product.md)
 - [Harness provenance](docs/references/harness-adoption.md): inspected upstream commit, actual conventions, and deliberate adaptations.
 - [Decision records](docs/decisions/2026-09-14-desktop-pdf-stack.md): proposed architecture decisions; all await review.
 
-The planning package contains Markdown documents and repository housekeeping only. The two supplied root PDFs are unchanged and excluded from Git under the original no-upload instruction. There is no application scaffold, dependency installation, or automatic Harness bootstrap.
+The planning package contains Markdown documents, two static PNG design boards and repository housekeeping only. The two supplied root PDFs are unchanged and excluded from Git under the original no-upload instruction. There is no application scaffold, dependency installation, or automatic Harness bootstrap.
 
 Repository: [FFA_internal](https://github.com/dand58022/FFA_internal). The owner authorized commits directly to `main` during the planning phase on 2026-09-15. Fresh clones need the two original PDFs supplied locally before PDF inspection or implementation tests can run.

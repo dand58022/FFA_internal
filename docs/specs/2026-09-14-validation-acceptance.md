@@ -3,7 +3,7 @@ node_id: design-validation-acceptance
 type: design
 title: Preparation validation and Stage 1 acceptance
 created: 2026-09-14
-updated: 2026-09-14
+updated: 2026-09-15
 status: draft
 category: cross-domain
 tags: [frontend, backend, testing]
@@ -31,6 +31,7 @@ interface IssueBase {
   id: string;
   severity: 'error' | 'warning'; code: string; message: string;
   caseId: string; contentRevision: number;
+  audience: 'clientVisible' | 'internalOnly';
   acknowledgementAllowed: boolean;
 }
 type ValidationIssue =
@@ -107,6 +108,19 @@ Use deterministic synthetic fixtures. Unit tests cover semantic invariants; PDF 
 | A11 | Quit/restart under same Windows user decrypts saved client, case, overrides/audit and artifacts; other-user/missing-key/tamper cases fail safely. | Crypto + Windows integration, M2/M8 |
 | A12 | Synthetic canary name/SSN/address never appear in app logs, browser storage, plaintext JSON, crash-upload configuration or command-line args; ciphertext and intentional attachment staging/export are distinguished. | Security scan + packaged test, M2/M8/M9 |
 
+### Meeting design and practical privacy proofs
+
+| ID | Observable pass condition | Milestone |
+|---|---|---|
+| A13 | All display-matrix sizes in the visual spec fit without horizontal form scrolling; pane minimums/fallback, keyboard divider, section selector, sticky actions, reduced motion and 200% text zoom remain usable. Real Windows 100/125% scaling is tested separately from browser viewport emulation. | M4/M5/M9 |
+| A14 | Presentation entry/blur/navigation remasks identifiers; hidden values absent from DOM/accessibility/tooltips; internal page 7, thumbnails, search and issue snippets withheld. Issue navigation cannot reveal internal content automatically; full validation still blocks. Accurate client PDF retains printed values and limitation note. No data/revision/approval change from toggling mode. | M3-M6 |
+| A15 | Identifier/PDF Copy/Cut, print shortcuts/menus, file drag/drop, default browser menus, second windows, navigation and deep-link attempts are blocked; bounded plain-text paste still works. Unrelated clipboard sentinel remains unchanged after paste, lock and timeout. | M1/M4/M5 |
+| A16 | Workstation lock/suspend revoke session immediately including save-failure and in-flight commands; resume stays locked. Blur remasks; delayed background timer is checked before data is restored. No 10-minute foreground interruption. | M1/M2/M8 |
+| A17 | Demo reset deletes only scoped dataset/backup/artifacts with explicit confirmation; failed cleanup is reported, active handoff prevents reset. Corrupt vault never auto-resets; uninstall preserves key/vault. No PII filenames or deliberate Recent Items/jump-list registration. | M2/M7-M9 |
+| A18 | Owned local components/fonts/icons/PDF assets work under runtime network denial; lockfile/license/vulnerability review recorded. Full keyboard workflow and drawer focus restoration work; color/focus contrast checked against semantic tokens. | M1/M5/M9 |
+
+Design matrix and component contracts: [visual design system](2026-09-15-visual-design-system.md). Security controls/limitations: [security](../SECURITY.md). A13–A18 supplement, rather than replace, the original twelve proofs.
+
 ### Additional mandatory checks
 
 - Unit: derived-name formatting; absence versus empty/null/false/zero; applicability; transactional group changes; input-loop suppression; source snapshot refresh; single-writer/stale command behavior; verification/approval invalidation; warning identity and acknowledgements.
@@ -125,7 +139,7 @@ M1 will define `npm run lint`, `npm run typecheck`, `npm run test:unit`, `npm ru
 
 ### Release/demo exit criteria
 
-All A01-A12 and relevant additional checks pass; six cards function; all selected outputs are current and correct; blocking issues cannot be bypassed; signatures stay with the client; original hashes match; offline packaged workflow and actual Outlook draft are rehearsed. Any unresolved appearance/export bug is a demo blocker, even if unit tests pass. Document remaining production gaps without presenting the prototype as production-ready.
+All A01-A18 and relevant additional checks pass; six cards function; all selected outputs are current and correct; blocking issues cannot be bypassed; signatures stay with the client; original hashes match; offline packaged workflow and actual Outlook draft are rehearsed. Any unresolved appearance/export bug is a demo blocker, even if unit tests pass. Document remaining production gaps without presenting the prototype as production-ready.
 
 ## Alternatives and open questions
 
